@@ -1,0 +1,9 @@
+spring:
+  redis:
+      host: 10.168.81.26
+      port: 6379
+      password: youngo_online_edu
+  datasource:
+    url: jdbc:mysql://10.168.81.26:3306/db_passport?characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false
+    username: youngo
+    password: youngo_online_edu

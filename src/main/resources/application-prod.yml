@@ -1,0 +1,27 @@
+spring:
+  redis:
+      host: 127.0.0.1
+      port: 6379
+#      password: youngocrm123456
+  passportDs:
+      url: jdbc:mysql://127.0.0.1:3306/db_passport2?characterEncoding=utf-8&autoReconnect=true&failOverReadOnly=false
+      username: youngo
+      password: youngoProd2015
+      driverClassName : com.mysql.jdbc.Driver
+      test-on-borrow: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 3600000
+#      validation-query: SELECT 1
+
+  datasource:
+      url: jdbc:mysql://10.160.26.165:3306/db_erp?useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull
+      username: youngo
+      password: youngoProd2015
+      driverClassName : com.mysql.jdbc.Driver
+      test-on-borrow: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 3600000
+
+
+
+

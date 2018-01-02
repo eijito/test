@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lhfx.dao.CitiesDao">
+    <!--The user defined SQL!-->
+
+
+
+
+
+
+    <!--The user defined SQL!-->
+    <resultMap id="returnEntity" type="com.lhfx.entity.Cities">
+        <id column="T4_id" javaType="Integer" jdbcType="INTEGER" property="id"/>
+        <result column="T4_city" javaType="String" jdbcType="VARCHAR" property="city"/>
+        <result column="T4_cityid" javaType="String" jdbcType="VARCHAR" property="cityid"/>
+        <result column="T4_provinceid" javaType="String" jdbcType="VARCHAR" property="provinceid"/>
+    </resultMap>
+
+    <select id="getById" parameterType="Integer" resultMap="returnEntity">
+        select T4.city T4_city,T4.cityid T4_cityid,T4.provinceid T4_provinceid, T4.id T4_id
+
+        from cities T4
+        
+        where T4.id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from cities
+        where id in
+        <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="flagBatchId" parameterType="map">
+        update cities set
+        <trim prefix="" prefixOverrides=",">
+        <if test="city != null">, city = #{city}</if>
+        <if test="cityid != null">, cityid = #{cityid}</if>
+        <if test="provinceid != null">, provinceid = #{provinceid}</if>
+        </trim>
+
+        where id in
+        <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="updateByEntity" parameterType="com.lhfx.entity.Cities">
+        update cities set
+        <trim prefix="" prefixOverrides=",">
+        <if test="city != null">, city = #{city}</if>
+        <if test="cityid != null">, cityid = #{cityid}</if>
+        <if test="provinceid != null">, provinceid = #{provinceid}</if>
+        </trim>
+
+        where id = #{id}
+    </update>
+
+    <update id="batchUpdateByEntity"  parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update book_chapter set
+            <trim prefix="" prefixOverrides=",">
+                <if test="item.city != null">, city = #{item.city}</if>
+                <if test="item.cityid != null">, cityid = #{item.cityid}</if>
+                <if test="item.provinceid != null">, provinceid = #{item.provinceid}</if>
+            </trim>
+            where id = #{id}
+        </foreach>
+    </update>
+
+    <insert id="insert" parameterType="com.lhfx.entity.Cities" useGeneratedKeys="true" keyProperty="id" >
+        <selectKey resultType="Integer" order="AFTER" keyProperty="id">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into cities
+        (
+            city,cityid,provinceid
+        )values(
+            #{city},#{cityid},#{provinceid}
+        )
+    </insert>
+
+    <insert id="batchInsert"  parameterType="list">
+        insert into cities
+        (
+            city,cityid,provinceid
+        ) values
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+             #{item.city} ,#{item.cityid} ,#{item.provinceid}
+        </foreach>
+    </insert>
+
+    <select id="list" parameterType="map" resultMap="returnEntity">
+        select T4.city T4_city,T4.cityid T4_cityid,T4.provinceid T4_provinceid, T4.id T4_id
+
+        from cities T4
+        
+            	<where>
+            <if test="city != null">and T4.city = #{city}</if>
+            <if test="cityid != null">and T4.cityid = #{cityid}</if>
+            <if test="provinceid != null">and T4.provinceid = #{provinceid}</if>
+        </where>
+
+        <if test="orderBy != null">order by #{orderBy}</if>
+        <if test="start != null and length != null">limit #{start}, #{length}</if>
+    </select>
+
+    <select id="count" parameterType="map" resultType="long">
+        select count(1) from cities T4
+            	<where>
+            <if test="city != null">and T4.city = #{city}</if>
+            <if test="cityid != null">and T4.cityid = #{cityid}</if>
+            <if test="provinceid != null">and T4.provinceid = #{provinceid}</if>
+        </where>
+
+    </select>
+
+    <select id="dict" parameterType="map" resultType="java.util.Map">
+        select  city city, cityid cityid, provinceid provinceid
+               , id  
+        from cities T4
+            	<where>
+            <if test="city != null">and T4.city = #{city}</if>
+            <if test="cityid != null">and T4.cityid = #{cityid}</if>
+            <if test="provinceid != null">and T4.provinceid = #{provinceid}</if>
+        </where>
+
+    </select>
+
+
+
+
+</mapper>

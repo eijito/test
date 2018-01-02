@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lhfx.dao.ProvincesDao">
+    <!--The user defined SQL!-->
+
+
+
+
+
+
+    <!--The user defined SQL!-->
+    <resultMap id="returnEntity" type="com.lhfx.entity.Provinces">
+        <id column="T3_id" javaType="Integer" jdbcType="INTEGER" property="id"/>
+        <result column="T3_province" javaType="String" jdbcType="VARCHAR" property="province"/>
+        <result column="T3_provinceid" javaType="String" jdbcType="VARCHAR" property="provinceid"/>
+    </resultMap>
+
+    <select id="getById" parameterType="Integer" resultMap="returnEntity">
+        select T3.province T3_province,T3.provinceid T3_provinceid, T3.id T3_id
+
+        from provinces T3
+        
+        where T3.id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from provinces
+        where id in
+        <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="flagBatchId" parameterType="map">
+        update provinces set
+        <trim prefix="" prefixOverrides=",">
+        <if test="province != null">, province = #{province}</if>
+        <if test="provinceid != null">, provinceid = #{provinceid}</if>
+        </trim>
+
+        where id in
+        <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="updateByEntity" parameterType="com.lhfx.entity.Provinces">
+        update provinces set
+        <trim prefix="" prefixOverrides=",">
+        <if test="province != null">, province = #{province}</if>
+        <if test="provinceid != null">, provinceid = #{provinceid}</if>
+        </trim>
+
+        where id = #{id}
+    </update>
+
+    <update id="batchUpdateByEntity"  parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update book_chapter set
+            <trim prefix="" prefixOverrides=",">
+                <if test="item.province != null">, province = #{item.province}</if>
+                <if test="item.provinceid != null">, provinceid = #{item.provinceid}</if>
+            </trim>
+            where id = #{id}
+        </foreach>
+    </update>
+
+    <insert id="insert" parameterType="com.lhfx.entity.Provinces" useGeneratedKeys="true" keyProperty="id" >
+        <selectKey resultType="Integer" order="AFTER" keyProperty="id">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into provinces
+        (
+            province,provinceid
+        )values(
+            #{province},#{provinceid}
+        )
+    </insert>
+
+    <insert id="batchInsert"  parameterType="list">
+        insert into provinces
+        (
+            province,provinceid
+        ) values
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+             #{item.province} ,#{item.provinceid}
+        </foreach>
+    </insert>
+
+    <select id="list" parameterType="map" resultMap="returnEntity">
+        select T3.province T3_province,T3.provinceid T3_provinceid, T3.id T3_id
+
+        from provinces T3
+        
+            	<where>
+            <if test="province != null">and T3.province = #{province}</if>
+            <if test="provinceid != null">and T3.provinceid = #{provinceid}</if>
+        </where>
+
+        <if test="orderBy != null">order by #{orderBy}</if>
+        <if test="start != null and length != null">limit #{start}, #{length}</if>
+    </select>
+
+    <select id="count" parameterType="map" resultType="long">
+        select count(1) from provinces T3
+            	<where>
+            <if test="province != null">and T3.province = #{province}</if>
+            <if test="provinceid != null">and T3.provinceid = #{provinceid}</if>
+        </where>
+
+    </select>
+
+    <select id="dict" parameterType="map" resultType="java.util.Map">
+        select  province province, provinceid provinceid
+               , id  
+        from provinces T3
+            	<where>
+            <if test="province != null">and T3.province = #{province}</if>
+            <if test="provinceid != null">and T3.provinceid = #{provinceid}</if>
+        </where>
+
+    </select>
+
+
+
+
+</mapper>

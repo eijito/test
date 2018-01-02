@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lhfx.dao.CraftsmanDao">
+    <!--The user defined SQL!-->
+
+
+
+
+
+
+    <!--The user defined SQL!-->
+    <resultMap id="returnEntity" type="com.lhfx.entity.Craftsman">
+        <id column="T6_id" javaType="Integer" jdbcType="INTEGER" property="id"/>
+        <result column="T6_area_name" javaType="String" jdbcType="VARCHAR" property="areaName"/>
+        <result column="T6_uid" javaType="Integer" jdbcType="INTEGER" property="uid"/>
+        <result column="T6_city_name" javaType="String" jdbcType="VARCHAR" property="cityName"/>
+        <result column="T6_province_id" javaType="Integer" jdbcType="INTEGER" property="provinceId"/>
+        <result column="T6_name" javaType="String" jdbcType="VARCHAR" property="name"/>
+        <result column="T6_mobile" javaType="Integer" jdbcType="INTEGER" property="mobile"/>
+        <result column="T6_area_id" javaType="Integer" jdbcType="INTEGER" property="areaId"/>
+        <result column="T6_province_name" javaType="String" jdbcType="VARCHAR" property="provinceName"/>
+        <result column="T6_city_id" javaType="Integer" jdbcType="INTEGER" property="cityId"/>
+        <collection property="craftsmanSkillList" ofType="com.lhfx.entity.CraftsmanSkill">
+            <result column="T5_craftsman_id" javaType="Integer" jdbcType="INTEGER" property="craftsmanId"/>
+            <result column="T5_skill_name" javaType="String" jdbcType="VARCHAR" property="skillName"/>
+        </collection>
+    </resultMap>
+
+    <select id="getById" parameterType="Integer" resultMap="returnEntity">
+        select T6.area_name T6_area_name,T6.uid T6_uid,T6.city_name T6_city_name,T6.province_id T6_province_id,T6.name T6_name,T6.mobile T6_mobile,T6.area_id T6_area_id,T6.province_name T6_province_name,T6.city_id T6_city_id, T6.id T6_id
+                , T5.craftsman_id T5_craftsman_id
+                , T5.skill_name T5_skill_name
+
+        from craftsman T6
+                left join craftsman_skill T5 on T6.id=T5.craftsman_id
+
+        where T6.id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from craftsman
+        where id in
+        <foreach collection="array" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="flagBatchId" parameterType="map">
+        update craftsman set
+        <trim prefix="" prefixOverrides=",">
+        <if test="areaName != null">, area_name = #{areaName}</if>
+        <if test="uid != null">, uid = #{uid}</if>
+        <if test="cityName != null">, city_name = #{cityName}</if>
+        <if test="provinceId != null">, province_id = #{provinceId}</if>
+        <if test="name != null">, name = #{name}</if>
+        <if test="mobile != null">, mobile = #{mobile}</if>
+        <if test="areaId != null">, area_id = #{areaId}</if>
+        <if test="provinceName != null">, province_name = #{provinceName}</if>
+        <if test="cityId != null">, city_id = #{cityId}</if>
+        </trim>
+
+        where id in
+        <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+
+    <update id="updateByEntity" parameterType="com.lhfx.entity.Craftsman">
+        update craftsman set
+        <trim prefix="" prefixOverrides=",">
+        <if test="areaName != null">, area_name = #{areaName}</if>
+        <if test="uid != null">, uid = #{uid}</if>
+        <if test="cityName != null">, city_name = #{cityName}</if>
+        <if test="provinceId != null">, province_id = #{provinceId}</if>
+        <if test="name != null">, name = #{name}</if>
+        <if test="mobile != null">, mobile = #{mobile}</if>
+        <if test="areaId != null">, area_id = #{areaId}</if>
+        <if test="provinceName != null">, province_name = #{provinceName}</if>
+        <if test="cityId != null">, city_id = #{cityId}</if>
+        </trim>
+
+        where id = #{id}
+    </update>
+
+    <update id="batchUpdateByEntity"  parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update book_chapter set
+            <trim prefix="" prefixOverrides=",">
+                <if test="item.areaName != null">, area_name = #{item.areaName}</if>
+                <if test="item.uid != null">, uid = #{item.uid}</if>
+                <if test="item.cityName != null">, city_name = #{item.cityName}</if>
+                <if test="item.provinceId != null">, province_id = #{item.provinceId}</if>
+                <if test="item.name != null">, name = #{item.name}</if>
+                <if test="item.mobile != null">, mobile = #{item.mobile}</if>
+                <if test="item.areaId != null">, area_id = #{item.areaId}</if>
+                <if test="item.provinceName != null">, province_name = #{item.provinceName}</if>
+                <if test="item.cityId != null">, city_id = #{item.cityId}</if>
+            </trim>
+            where id = #{id}
+        </foreach>
+    </update>
+
+    <insert id="insert" parameterType="com.lhfx.entity.Craftsman" useGeneratedKeys="true" keyProperty="id" >
+        <selectKey resultType="Integer" order="AFTER" keyProperty="id">
+            select LAST_INSERT_ID()
+        </selectKey>
+        insert into craftsman
+        (
+            area_name,uid,city_name,province_id,name,mobile,area_id,province_name,city_id
+        )values(
+            #{areaName},#{uid},#{cityName},#{provinceId},#{name},#{mobile},#{areaId},#{provinceName},#{cityId}
+        )
+    </insert>
+
+    <insert id="batchInsert"  parameterType="list">
+        insert into craftsman
+        (
+            area_name,uid,city_name,province_id,name,mobile,area_id,province_name,city_id
+        ) values
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+             #{item.areaName} ,#{item.uid} ,#{item.cityName} ,#{item.provinceId} ,#{item.name} ,#{item.mobile} ,#{item.areaId} ,#{item.provinceName} ,#{item.cityId}
+        </foreach>
+    </insert>
+
+    <select id="list" parameterType="map" resultMap="returnEntity">
+        select T6.area_name T6_area_name,T6.uid T6_uid,T6.city_name T6_city_name,T6.province_id T6_province_id,T6.name T6_name,T6.mobile T6_mobile,T6.area_id T6_area_id,T6.province_name T6_province_name,T6.city_id T6_city_id, T6.id T6_id
+                , T5.craftsman_id T5_craftsman_id
+                , T5.skill_name T5_skill_name
+
+        from craftsman T6
+                left join craftsman_skill T5 on T6.id=T5.craftsman_id
+
+            	<where>
+            <if test="areaName != null">and T6.area_name = #{areaName}</if>
+            <if test="uid != null">and T6.uid = #{uid}</if>
+            <if test="cityName != null">and T6.city_name = #{cityName}</if>
+            <if test="provinceId != null">and T6.province_id = #{provinceId}</if>
+            <if test="name != null">and T6.name = #{name}</if>
+            <if test="mobile != null">and T6.mobile = #{mobile}</if>
+            <if test="areaId != null">and T6.area_id = #{areaId}</if>
+            <if test="provinceName != null">and T6.province_name = #{provinceName}</if>
+            <if test="cityId != null">and T6.city_id = #{cityId}</if>
+        </where>
+
+        <if test="orderBy != null">order by #{orderBy}</if>
+        <if test="start != null and length != null">limit #{start}, #{length}</if>
+    </select>
+
+    <select id="count" parameterType="map" resultType="long">
+        select count(1) from craftsman T6
+            	<where>
+            <if test="areaName != null">and T6.area_name = #{areaName}</if>
+            <if test="uid != null">and T6.uid = #{uid}</if>
+            <if test="cityName != null">and T6.city_name = #{cityName}</if>
+            <if test="provinceId != null">and T6.province_id = #{provinceId}</if>
+            <if test="name != null">and T6.name = #{name}</if>
+            <if test="mobile != null">and T6.mobile = #{mobile}</if>
+            <if test="areaId != null">and T6.area_id = #{areaId}</if>
+            <if test="provinceName != null">and T6.province_name = #{provinceName}</if>
+            <if test="cityId != null">and T6.city_id = #{cityId}</if>
+        </where>
+
+    </select>
+
+    <select id="dict" parameterType="map" resultType="java.util.Map">
+        select  area_name areaName, uid uid, city_name cityName, province_id provinceId, name name, mobile mobile, area_id areaId, province_name provinceName, city_id cityId
+               , id  
+        from craftsman T6
+            	<where>
+            <if test="areaName != null">and T6.area_name = #{areaName}</if>
+            <if test="uid != null">and T6.uid = #{uid}</if>
+            <if test="cityName != null">and T6.city_name = #{cityName}</if>
+            <if test="provinceId != null">and T6.province_id = #{provinceId}</if>
+            <if test="name != null">and T6.name = #{name}</if>
+            <if test="mobile != null">and T6.mobile = #{mobile}</if>
+            <if test="areaId != null">and T6.area_id = #{areaId}</if>
+            <if test="provinceName != null">and T6.province_name = #{provinceName}</if>
+            <if test="cityId != null">and T6.city_id = #{cityId}</if>
+        </where>
+
+    </select>
+
+
+
+<!--linked table [craftsman_skill] start-->
+    <select id="linkedCraftsmanSkill" resultType="long">
+        select count(1) from craftsman_skill
+        where craftsman_id in
+        <foreach collection="craftsmanIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <delete id="deleteLinkedCraftsmanSkill">
+        delete from craftsman_skill
+        where craftsman_id in
+        <foreach collection="craftsmanIds" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="deleteBeyondCraftsmanSkill">
+        delete from craftsman_skill
+        where craftsman_id = #{craftsmanId} AND skill_name not in
+        <foreach collection="craftsmanSkills" index="index" item="item" open="(" separator="," close=")">
+            #{item.skillName}
+        </foreach>
+    </delete>
+    <insert id="insertCraftsmanSkillIfMiss"  parameterType="list">
+        insert into craftsman_skill (craftsman_id,skill_name)
+        select craftsman_id,skill_name from
+        <foreach collection="craftsmanSkills" item="item" index="index" open="(" separator=" union all " close=")" >
+             select  #{craftsmanId} craftsman_id, #{item.skillName} skill_name
+        </foreach> tmp
+        where not exists (select 1 from craftsman_skill T5 where
+            tmp.craftsman_id = T5.craftsman_id and tmp.skill_name = T5.skill_name)
+    </insert>
+    <update id="updateCraftsmanSkillIfExist"  parameterType="list">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update craftsman_skill set
+            <trim prefix="" prefixOverrides=",">
+            </trim>
+            where craftsman_id = #{item.craftsmanId} and skill_name = #{item.skillName}
+        </foreach>
+    </update>
+<!--linked table [craftsman_skill] end-->
+
+
+</mapper>

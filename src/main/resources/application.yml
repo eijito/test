@@ -1,0 +1,45 @@
+#启动: nohup java  -Dspring.profiles.active=prod  -jar  blueWhale-erp-1.0.jar >  log.erp 2>&1 &
+server:
+  port: 8284
+  compression:
+    enabled: true
+  connection-timeout: 3000
+
+debug: false
+
+swagger:
+    host: local.dev.com
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://eureka-first:8761/eureka/,http://eureka-second:8762/eureka/
+  instance:
+      prefer-ip-address: true
+      instance-id: ${spring.cloud.client.ipAddress}
+
+baseServer:
+  sms:
+    verify: http://common.e-youngo.com/sms189/youngo/verifiSms?phone=%s&code=%s
+    templete: http://common.e-youngo.com/sms189/youngo/verifiSms?phone=%s&code=%s
+  wx:
+    signature: http://common.e-youngo.com/angelWx/signature
+    token: http://common.e-youngo.com/angelWx/accessToken
+    grant: http://common.e-youngo.com/angelWx/wapAccessToken/%s
+
+spring:
+  # 环境 dev|test|prod
+  profiles:
+    active: dev
+  application:
+    # passport配置
+    name: house
+    passport:
+      type: house
+      onFuncNull: 1 #未传funcId时,1:拒绝访问;0:随意访问
+      onRoleNull: 0 #funcId未授权任务角色时,1:拒绝访问;0:随意访问
+
+
+
+
+
+

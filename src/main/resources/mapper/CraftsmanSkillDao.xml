@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.lhfx.dao.CraftsmanSkillDao">
+    <!--The user defined SQL!-->
+
+
+
+
+
+
+    <!--The user defined SQL!-->
+    <resultMap id="returnEntity" type="com.lhfx.entity.CraftsmanSkill">
+        <result column="T5_craftsman_id" javaType="Integer" jdbcType="INTEGER" property="craftsmanId"/>
+        <result column="T5_skill_name" javaType="String" jdbcType="VARCHAR" property="skillName"/>
+        <association property="craftsman" javaType="com.lhfx.entity.Craftsman">
+            <id column="T6_id" javaType="Integer" jdbcType="INTEGER" property="id"/>
+            <result column="T6_area_name" javaType="String" jdbcType="VARCHAR" property="areaName"/>
+            <result column="T6_uid" javaType="Integer" jdbcType="INTEGER" property="uid"/>
+            <result column="T6_city_name" javaType="String" jdbcType="VARCHAR" property="cityName"/>
+            <result column="T6_province_id" javaType="Integer" jdbcType="INTEGER" property="provinceId"/>
+            <result column="T6_name" javaType="String" jdbcType="VARCHAR" property="name"/>
+            <result column="T6_mobile" javaType="Integer" jdbcType="INTEGER" property="mobile"/>
+            <result column="T6_area_id" javaType="Integer" jdbcType="INTEGER" property="areaId"/>
+            <result column="T6_province_name" javaType="String" jdbcType="VARCHAR" property="provinceName"/>
+            <result column="T6_city_id" javaType="Integer" jdbcType="INTEGER" property="cityId"/>
+        </association>
+    </resultMap>
+
+
+    <insert id="insert" parameterType="com.lhfx.entity.CraftsmanSkill" >
+        insert into craftsman_skill
+        (
+            craftsman_id,skill_name
+        )values(
+            #{craftsmanId},#{skillName}
+        )
+    </insert>
+
+    <insert id="batchInsert"  parameterType="list">
+        insert into craftsman_skill
+        (
+            craftsman_id,skill_name
+        ) values
+        <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+             #{item.craftsmanId} ,#{item.skillName}
+        </foreach>
+    </insert>
+
+    <select id="list" parameterType="map" resultMap="returnEntity">
+        select T5.craftsman_id T5_craftsman_id,T5.skill_name T5_skill_name                , T6.area_name T6_area_name
+                , T6.uid T6_uid
+                , T6.city_name T6_city_name
+                , T6.province_id T6_province_id
+                , T6.name T6_name
+                , T6.mobile T6_mobile
+                , T6.area_id T6_area_id
+                , T6.province_name T6_province_name
+                , T6.city_id T6_city_id
+                , T6.id T6_id
+
+        from craftsman_skill T5
+        left join craftsman T6 on T5.craftsman_id=T6.id
+
+            	<where>
+            <if test="craftsmanId != null">and T5.craftsman_id = #{craftsmanId}</if>
+            <if test="skillName != null">and T5.skill_name = #{skillName}</if>
+        </where>
+
+        <if test="orderBy != null">order by #{orderBy}</if>
+        <if test="start != null and length != null">limit #{start}, #{length}</if>
+    </select>
+
+    <select id="count" parameterType="map" resultType="long">
+        select count(1) from craftsman_skill T5
+            	<where>
+            <if test="craftsmanId != null">and T5.craftsman_id = #{craftsmanId}</if>
+            <if test="skillName != null">and T5.skill_name = #{skillName}</if>
+        </where>
+
+    </select>
+
+    <select id="dict" parameterType="map" resultType="java.util.Map">
+        select  craftsman_id craftsmanId, skill_name skillName
+               
+        from craftsman_skill T5
+            	<where>
+            <if test="craftsmanId != null">and T5.craftsman_id = #{craftsmanId}</if>
+            <if test="skillName != null">and T5.skill_name = #{skillName}</if>
+        </where>
+
+    </select>
+
+
+
+
+</mapper>
